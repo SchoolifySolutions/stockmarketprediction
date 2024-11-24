@@ -9,8 +9,8 @@ import streamlit as st
 from textblob import TextBlob
 
 # Set up the Streamlit app
-st.title("Stock Price Prediction and Sentiment Analysis App 📈")
-st.write("This app predicts future stock prices using historical data and Linear Regression. Additionally, you can perform sentiment analysis on stock-related text!")
+st.title("Stock Price Prediction and Opinion Analysis App 📈")
+st.write("This app predicts future stock prices using historical data and Linear Regression. Additionally, you can perform opinion analysis on stock-related text!")
 
 # Section for Stock Price Prediction (same as before)
 ticker = st.text_input("Enter the stock ticker (e.g., AAPL, MSFT):", "AAPL")
