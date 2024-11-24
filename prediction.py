@@ -68,24 +68,51 @@ if st.button("Fetch Data"):
 
             # Predict future prices
             future_days = st.slider("Predict stock price for the next 'n' days:", min_value=1, max_value=30, value=7)
-            future_dates = [data.index[-1] + pd.Timedelta(days=i) for i in range(1, future_days + 1)]
-            future_ordinals = np.array([date.toordinal() for date in future_dates]).reshape(-1, 1)
-            future_predictions = model.predict(future_ordinals)
 
-            # Display future predictions
-            st.write(f"### Predicted Prices for the next {future_days} days:")
-            future_df = pd.DataFrame({"Date": future_dates, "Predicted Price (USD)": future_predictions})
-            st.write(future_df)
+            if future_days > 0:
+                try:
+                    # Ensure data.index[-1] is valid
+                    if len(data) > 0:
+                        last_date = data.index[-1]
+                    else:
+                        st.error("No data available to predict future prices.")
+                        raise ValueError("Empty data index.")
 
-            # Plot future predictions
-            st.write("### Future Predictions")
-            plt.figure(figsize=(10, 5))
-            plt.plot(future_dates, future_predictions, marker='o', label="Future Predictions")
-            plt.title("Future Stock Price Prediction")
-            plt.xlabel("Date")
-            plt.ylabel("Price (USD)")
-            plt.legend()
-            st.pyplot(plt)
+                    # Generate future ordinal dates
+                    future_dates = [last_date + pd.Timedelta(days=i) for i in range(1, future_days + 1)]
+                    future_ordinals = np.array([date.toordinal() for date in future_dates]).reshape(-1, 1)
+
+                    # Debugging output (optional)
+                    st.write("Future Dates:", future_dates)
+                    st.write("Future Ordinals Shape:", future_ordinals.shape)
+
+                    # Predict prices
+                    future_predictions = model.predict(future_ordinals)
+
+                    # Ensure both arrays are 1-dimensional
+                    future_predictions = future_predictions.flatten()
+
+                    # Display future predictions
+                    st.write(f"### Predicted Prices for the next {future_days} days:")
+                    future_df = pd.DataFrame({
+                        "Date": future_dates,  # Ensure future_dates is a list, which is 1-dimensional
+                        "Predicted Price (USD)": future_predictions  # Flattened predictions to ensure 1D array
+                    })
+                    st.write(future_df)
+
+                    # Plot future predictions
+                    st.write("### Future Predictions")
+                    plt.figure(figsize=(10, 5))
+                    plt.plot(future_dates, future_predictions, marker='o', label="Future Predictions")
+                    plt.title("Future Stock Price Prediction")
+                    plt.xlabel("Date")
+                    plt.ylabel("Price (USD)")
+                    plt.legend()
+                    st.pyplot(plt)
+
+                except Exception as e:
+                    st.error(f"Error predicting future prices: {e}")
+
 
     except Exception as e:
         st.error(f"Error fetching data: {e}")
