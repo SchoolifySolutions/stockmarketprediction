@@ -10,6 +10,8 @@ import streamlit as st
 # Set up the Streamlit app
 st.title("Stock Price Prediction App 📈")
 st.write("This app predicts future stock prices using historical data and Linear Regression.")
+st.write("By: Varshith Gude and Sasidhar Jasty")
+
 
 # Input: Stock ticker symbol and date range
 ticker = st.text_input("Enter the stock ticker (e.g., AAPL, MSFT):", "AAPL")
